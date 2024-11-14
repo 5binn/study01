@@ -9,7 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -38,23 +41,23 @@ public class StaffController {
         return "staff/list";
     }
 
-    @GetMapping("/list/{state}")
-    public String list(@PathVariable(value = "state") String state,
-                       Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        if (state.equals("retired")) {
-            Page<Staff> paging = this.staffService.getRetiredList(page);
-            model.addAttribute("paging", paging);
-            return "staff/list::#staffListCon";
-        } else if (state.equals("hired")) {
-            Page<Staff> paging = this.staffService.getHiredList(page);
-            model.addAttribute("paging", paging);
-            return "staff/list::#staffListCon";
-        } else {
-            Page<Staff> paging = this.staffService.getList(page);
-            model.addAttribute("paging", paging);
-            return "staff/list::#staffListCon";
-        }
-    }
+//    @GetMapping("/list/{state}")
+//    public String list(@PathVariable(value = "state") String state,
+//                       Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
+//        if (state.equals("retired")) {
+//            Page<Staff> paging = this.staffService.getRetiredList(page);
+//            model.addAttribute("paging", paging);
+//            return "staff/list::#staffListCon";
+//        } else if (state.equals("hired")) {
+//            Page<Staff> paging = this.staffService.getHiredList(page);
+//            model.addAttribute("paging", paging);
+//            return "staff/list::#staffListCon";
+//        } else {
+//            Page<Staff> paging = this.staffService.getList(page);
+//            model.addAttribute("paging", paging);
+//            return "staff/list::#staffListCon";
+//        }
+//    }
 
     @GetMapping("/register")
     public String register(StaffForm staffForm) {
