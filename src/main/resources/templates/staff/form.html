@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+    <title>인사관리 시스템</title>
+
+    <style>
+        .pagination {
+          justify-content: center;
+        }
+
+        .table td, .table th {
+          vertical-align: middle;
+          text-align: center;
+        }
+
+        .custom-control {
+          padding-right: 0
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+<div class="container">
+
+    <h2 class="pt-3"> 인사관리시스템 </h2>
+    <hr>
+
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link active" href="/staff/list">사원목록</a>
+        </li>
+    </ul>
+
+    <hr>
+
+    <div class="col-lg-12 well">
+        <div class="row">
+            <form th:action="@{/staff/register}" th:object="${staffForm}" method="post">
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+                    <div th:each="err : ${#fields.allErrors()}" th:text="${err}"/>
+                </div>
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label>성명</label>
+                            <input th:field="*{name}" type="text" placeholder="성명" class="form-control" name="name">
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label>주민등록번호</label>
+                            <input th:field="*{personalNum}" type="number" placeholder="-없이 입력해 주세요."
+                                   class="form-control"
+                                   name="personalNum" maxlength="13">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>주소</label>
+                        <input type="hidden" id="sample6_postcode" placeholder="우편번호">
+                        <input type="hidden" id="sample6_detailAddress" placeholder="상세주소">
+                        <input type="hidden" id="sample6_extraAddress" placeholder="참고항목">
+                        <div class="d-flex" style="align-items: center;">
+                            <input th:field="*{address}" placeholder="주소" class="form-control"
+                                   type="text" name="address" style="width: 450px;" id="sample6_address">
+                            <span class="w-10 pl-2" onclick="sample6_execDaumPostcode()" style="cursor: pointer;">찾기</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 form-group">
+                            <label>입사일</label>
+                            <input th:field="*{startDate}" type="date" placeholder="입사일" class="form-control"
+                                   name="startDate">
+                        </div>
+                        <div class="col-sm-4 form-group">
+                            <label for="exampleFormControlSelect1">부서명</label>
+                            <select th:field="*{dept}" class="form-control" name="dept">
+                                <option value="관리부">관리부</option>
+                                <option value="영업부">영업부</option>
+                                <option value="개발부">개발부</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4 form-group">
+                            <label>퇴사일</label>
+                            <input th:field="*{endDate}" type="date" placeholder="퇴사일" class="form-control"
+                                   name="endDate">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 form-group">
+                            <label for="exampleFormControlSelect1">급여은행</label>
+                            <select th:field="*{bank}" class="form-control" id="exampleFormControlSelect1" name="bank">
+                                <option value="국민은행">국민은행</option>
+                                <option value="우리은행">우리은행</option>
+                                <option value="기업은행">기업은행</option>
+                                <option value="농협은행">농협은행</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-8 form-group">
+                            <label>급여계좌</label>
+                            <input th:field="*{account}" type="number" placeholder="급여계좌" class="form-control"
+                                   name="account">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>전화번호</label>
+                        <input th:field="*{mobileNum}" type="number" placeholder="-없이 입력해 주세요." class="form-control"
+                               name="mobileNum" maxlength="11">
+                    </div>
+                    <div class="form-group">
+                        <label>Email </label>
+                        <input th:field="*{email}" type="email" placeholder="Email" class="form-control" name="email">
+                    </div>
+                    <button type="submit" class="btn btn btn-dark mt-3">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+
+</body>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function sample6_execDaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+            var extraAddr = ''; // 참고항목 변수
+
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
+            }
+
+            // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+            if(data.userSelectedType === 'R'){
+                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                    extraAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가한다.
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                if(extraAddr !== ''){
+                    extraAddr = ' (' + extraAddr + ')';
+                }
+                // 조합된 참고항목을 해당 필드에 넣는다.
+                document.getElementById("sample6_extraAddress").value = extraAddr;
+
+            } else {
+                document.getElementById("sample6_extraAddress").value = '';
+            }
+
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('sample6_postcode').value = data.zonecode;
+            document.getElementById("sample6_address").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("sample6_detailAddress").focus();
+        }
+    }).open();
+}
+</script>
+</html>

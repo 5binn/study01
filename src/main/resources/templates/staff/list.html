@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <title>인사관리 시스템</title>
+    <style>
+        .pagination {
+          justify-content: center;
+        }
+
+        .table td, .table th {
+          vertical-align: middle;
+          text-align: center;
+        }
+
+        .custom-control {
+          padding-right: 0
+        }
+
+    </style>
+
+</head>
+<body>
+
+
+<div class="container">
+
+    <h2 class="pt-3"> 인사관리시스템 </h2>
+    <hr>
+
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">사원목록</a>
+        </li>
+    </ul>
+
+    <hr>
+
+    <div class="card border-0">
+        <div class="card-body">
+            <!-- Search form -->
+            <form class="form-inline d-flex justify-content-center md-form form-sm active-cyan-2 mt-2">
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="all" th:checked="${state == 'all'}"
+                           name="sort" value="all">
+                    <label class="form-check-label" for="all">전체</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="hired" th:checked="${state == 'hired'}"
+                           name="sort" value="hired">
+                    <label class="form-check-label" for="hired">근무자</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="retired" th:checked="${state == 'retired'}"
+                           name="sort" value="retired">
+                    <label class="form-check-label" for="retired">퇴사자</label>
+                </div>
+                <input class="form-control form-control-sm mr-3 ml-3" type="text" placeholder="성명" aria-label="Search"
+                       th:value="${name}" id="search_name">
+                <i class="fas fa-search" aria-hidden="true" onclick="search()" style="cursor: pointer;"></i>
+            </form>
+        </div>
+    </div>
+
+    <form th:action="@{/staff/delete}" method="POST" id="deleteForm">
+
+        <div id="staffListCon" class="table-responsive-xl">
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col" onclick="selectAll()" style="cursor: pointer;">선택</th>
+                    <th scope="col">사원번호</th>
+                    <th scope="col">성명</th>
+                    <th scope="col">주민번호</th>
+                    <th scope="col">부서명</th>
+                    <th scope="col">직위</th>
+                    <th scope="col">입사일</th>
+                    <th scope="col">퇴사일</th>
+                    <th scope="col">Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${paging.totalPages == 0}">
+                    <td colspan="9">검색결과가 없습니다.</td>
+                </tr>
+                <tr th:if="${paging.totalPages != 0}" id="staffList" th:each="staff, loop : ${paging}">
+                    <td>
+                        <input type="checkbox" id="staffId" name="staffId" th:value="${staff.id}">
+                    </td>
+                    <td th:if="${staff.id < 10}" th:text="|0000000${staff.id}|"></td>
+                    <td th:if="${staff.id < 100 && staff.id > 9}" th:text="|000000${staff.id}|"></td>
+                    <td th:if="${staff.id < 1000 && staff.id > 99}" th:text="|00000${staff.id}|"></td>
+                    <td th:if="${staff.id < 10000 && staff.id > 999}" th:text="|0000${staff.id}|"></td>
+                    <td th:if="${staff.id < 100000 && staff.id > 9999}" th:text="|000${staff.id}|"></td>
+                    <td th:if="${staff.id < 1000000 && staff.id > 99999}" th:text="|00${staff.id}|"></td>
+                    <td th:text="${staff.name}"></td>
+                    <td th:text="${staff.personalNum}"></td>
+                    <td th:text="${staff.dept}"></td>
+                    <td th:text="${staff.role == null} ? '사원' : ${staff.role}"></td>
+                    <td th:text="${staff.startDate}"></td>
+                    <td th:text="${staff.endDate == null} ? '-' : ${staff.endDate}"></td>
+                    <td th:text="${staff.email}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card border-0">
+            <div class="card-body">
+                <nav aria-label="Page navigation" th:if="${!paging.isEmpty()}">
+                    <ul class="pagination pagination-circle pg-blue">
+                        <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+                            <a class="page-link" aria-label="Previous" th:href="@{|?page=${paging.number-1}|}">
+                                <span aria-hidden="true">«</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+                            th:if="${(page >= paging.number - 2 && page <= paging.number + 2) ||
+                                    (paging.number == 0 && page <= 4) ||
+                                    (paging.number == paging.totalPages - 1 && page >= paging.totalPages - 5) ||
+                                    (paging.number == 1 && page <= 4) ||
+                                    (paging.number == paging.totalPages - 2 && page >= paging.totalPages - 5)}"
+                            th:classappend="${page == paging.number} ? 'active'"
+                            class="page-item">
+                            <a th:text="${page + 1}" class="page-link" th:href="@{|?page=${page}|}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+                            <a class="page-link" aria-label="Next" th:href="@{|?page=${paging.number+1}|}">
+                                <span aria-hidden="true">»</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </nav>
+            </div>
+        </div>
+
+        <div class="card border-0">
+            <div class="card-body pl-0 pt-0">
+                <!-- <div class="btn-group" role="group" aria-label="buttons"> -->
+                <a href="/staff/register">
+                    <button type="button" class="btn btn-dark mr-3">추가</button>
+                </a>
+                <button type="button" onclick="deleteSelected()" class="btn btn-dark">삭제</button>
+                <!-- </div> -->
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function deleteSelected() {
+        const form = document.getElementById("deleteForm");
+        const selectedItems = Array.from(form.querySelectorAll("input[name='staffId']:checked"));
+            if (selectedItems.length > 0) {
+                if (confirm("정말로 삭제하시겠습니까?")) {
+                form.submit();
+                }
+            } else {
+            alert("한 개 이상 선택해주세요.");
+            }
+    }
+
+    function selectAll() {
+        const checkboxes = document.querySelectorAll("input[name='staffId']");
+        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+        checkboxes.forEach((checkbox) => {
+        checkbox.checked = !allChecked;
+        });
+    }
+
+<!--        function sortList() {-->
+<!--            var selected = $("input[name='sort']:checked").val(); //클릭한 값을 저장-->
+<!--            $.ajax({-->
+<!--                type: 'GET',              // 타입 (get, post, put 등등)-->
+<!--                url: '/staff/list/' + selected,     // 요청할 url-->
+<!--                success: function (result) { // 결과 성공 콜백함수-->
+<!--                    $("table").replaceWith(result);-->
+<!--                    console.log(result);-->
+<!--                },-->
+<!--                error: function (request, status, error) { // 결과 에러 콜백함수-->
+<!--                    console.log(error)-->
+<!--                }-->
+<!--            })-->
+<!--        }-->
+
+<!--    function sortList() {-->
+<!--        var selectedValue = $("input[name='sort']:checked").val();-->
+<!--        var href = '/staff/list?state=' + encodeURIComponent(selectedValue);-->
+<!--        window.location.href = href;-->
+<!--    }-->
+
+    function search() {
+    const list = document.getElementById('staffList');
+        console.log(list);
+        var selectedValue = $("input[name='sort']:checked").val();
+        var searchValue = document.getElementById('search_name').value;
+        var href = '/staff/list?state=' + encodeURIComponent(selectedValue) + '&name=' + encodeURIComponent(searchValue);
+
+        window.location.href = href;
+
+    }
+
+    function updatePaginationLinks() {
+        var selectedValue = $("input[name='sort']:checked").val();
+        var searchValue = document.getElementById('search_name').value; // 현재 검색어 값
+        var links = document.querySelectorAll('.pagination .page-item a');
+
+        console.log("Selected Sort State: ", selectedValue);
+        console.log("Search Name: ", searchValue);
+
+        links.forEach(link => {
+            var href = link.getAttribute('href');
+            if (href) {
+                if (href.indexOf('?') !== -1) {
+                    link.setAttribute('href', href +
+                    '&state=' + encodeURIComponent(selectedValue) +
+                    '&name=' + encodeURIComponent(searchValue));
+                } else {
+                    link.setAttribute('href', href +
+                    '?state=' + encodeURIComponent(selectedValue) +
+                    '&name=' + encodeURIComponent(searchValue));
+                }
+            }
+        });
+        // 페이지네이션 상태 (현재 페이지, 전체 페이지 등) 콘솔 출력
+    var currentPage = $(".page-item.active a").text();
+    var totalPages = $(".pagination").find('.page-item').length - 2; // 첫 번째와 마지막 페이지 링크 제외
+    console.log("Current Page: ", currentPage.length);
+    console.log("Total Pages: ", totalPages);
+    }
+
+    // 페이지 이동 시, name 파라미터를 유지하도록 페이지네이션을 업데이트
+    window.addEventListener('load', updatePaginationLinks);
+</script>
+
+</body>
+</html>
