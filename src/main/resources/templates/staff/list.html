@@ -1,53 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
-    <title>인사관리 시스템</title>
-    <style>
-        .pagination {
-          justify-content: center;
-        }
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container">
 
-        .table td, .table th {
-          vertical-align: middle;
-          text-align: center;
-        }
-
-        .custom-control {
-          padding-right: 0
-        }
-
-    </style>
-
-</head>
-<body>
-
-
-<div class="container">
-
-    <h2 class="pt-3"> 인사관리시스템 </h2>
-    <hr>
-
-    <ul class="nav">
-        <li class="nav-item">
-            <a class="nav-link active" href="#">사원목록</a>
-        </li>
-    </ul>
-
-    <hr>
 
     <div class="card border-0">
         <div class="card-body">
@@ -120,7 +73,7 @@
         <div class="card border-0">
             <div class="card-body">
                 <nav aria-label="Page navigation" th:if="${!paging.isEmpty()}">
-                    <ul class="pagination pagination-circle pg-blue">
+                    <ul class="pagination pagination-circle pg-blue" style="justify-content: center;">
                         <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
                             <a class="page-link" aria-label="Previous" th:href="@{|?page=${paging.number-1}|}">
                                 <span aria-hidden="true">«</span>
@@ -160,95 +113,93 @@
             </div>
         </div>
     </form>
-</div>
 
 
-<script>
-    function deleteSelected() {
-        const form = document.getElementById("deleteForm");
-        const selectedItems = Array.from(form.querySelectorAll("input[name='staffId']:checked"));
-            if (selectedItems.length > 0) {
-                if (confirm("정말로 삭제하시겠습니까?")) {
-                form.submit();
-                }
-            } else {
-            alert("한 개 이상 선택해주세요.");
-            }
-    }
-
-    function selectAll() {
-        const checkboxes = document.querySelectorAll("input[name='staffId']");
-        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-
-        checkboxes.forEach((checkbox) => {
-        checkbox.checked = !allChecked;
-        });
-    }
-
-<!--        function sortList() {-->
-<!--            var selected = $("input[name='sort']:checked").val(); //클릭한 값을 저장-->
-<!--            $.ajax({-->
-<!--                type: 'GET',              // 타입 (get, post, put 등등)-->
-<!--                url: '/staff/list/' + selected,     // 요청할 url-->
-<!--                success: function (result) { // 결과 성공 콜백함수-->
-<!--                    $("table").replaceWith(result);-->
-<!--                    console.log(result);-->
-<!--                },-->
-<!--                error: function (request, status, error) { // 결과 에러 콜백함수-->
-<!--                    console.log(error)-->
-<!--                }-->
-<!--            })-->
-<!--        }-->
-
-<!--    function sortList() {-->
-<!--        var selectedValue = $("input[name='sort']:checked").val();-->
-<!--        var href = '/staff/list?state=' + encodeURIComponent(selectedValue);-->
-<!--        window.location.href = href;-->
-<!--    }-->
-
-    function search() {
-    const list = document.getElementById('staffList');
-        console.log(list);
-        var selectedValue = $("input[name='sort']:checked").val();
-        var searchValue = document.getElementById('search_name').value;
-        var href = '/staff/list?state=' + encodeURIComponent(selectedValue) + '&name=' + encodeURIComponent(searchValue);
-
-        window.location.href = href;
-
-    }
-
-    function updatePaginationLinks() {
-        var selectedValue = $("input[name='sort']:checked").val();
-        var searchValue = document.getElementById('search_name').value; // 현재 검색어 값
-        var links = document.querySelectorAll('.pagination .page-item a');
-
-        console.log("Selected Sort State: ", selectedValue);
-        console.log("Search Name: ", searchValue);
-
-        links.forEach(link => {
-            var href = link.getAttribute('href');
-            if (href) {
-                if (href.indexOf('?') !== -1) {
-                    link.setAttribute('href', href +
-                    '&state=' + encodeURIComponent(selectedValue) +
-                    '&name=' + encodeURIComponent(searchValue));
+    <script>
+        function deleteSelected() {
+            const form = document.getElementById("deleteForm");
+            const selectedItems = Array.from(form.querySelectorAll("input[name='staffId']:checked"));
+                if (selectedItems.length > 0) {
+                    if (confirm("정말로 삭제하시겠습니까?")) {
+                    form.submit();
+                    }
                 } else {
-                    link.setAttribute('href', href +
-                    '?state=' + encodeURIComponent(selectedValue) +
-                    '&name=' + encodeURIComponent(searchValue));
+                alert("한 개 이상 선택해주세요.");
                 }
-            }
-        });
-        // 페이지네이션 상태 (현재 페이지, 전체 페이지 등) 콘솔 출력
-    var currentPage = $(".page-item.active a").text();
-    var totalPages = $(".pagination").find('.page-item').length - 2; // 첫 번째와 마지막 페이지 링크 제외
-    console.log("Current Page: ", currentPage.length);
-    console.log("Total Pages: ", totalPages);
-    }
+        }
 
-    // 페이지 이동 시, name 파라미터를 유지하도록 페이지네이션을 업데이트
-    window.addEventListener('load', updatePaginationLinks);
-</script>
+        function selectAll() {
+            const checkboxes = document.querySelectorAll("input[name='staffId']");
+            const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
 
-</body>
+            checkboxes.forEach((checkbox) => {
+            checkbox.checked = !allChecked;
+            });
+        }
+
+    <!--        function sortList() {-->
+    <!--            var selected = $("input[name='sort']:checked").val(); //클릭한 값을 저장-->
+    <!--            $.ajax({-->
+    <!--                type: 'GET',              // 타입 (get, post, put 등등)-->
+    <!--                url: '/staff/list/' + selected,     // 요청할 url-->
+    <!--                success: function (result) { // 결과 성공 콜백함수-->
+    <!--                    $("table").replaceWith(result);-->
+    <!--                    console.log(result);-->
+    <!--                },-->
+    <!--                error: function (request, status, error) { // 결과 에러 콜백함수-->
+    <!--                    console.log(error)-->
+    <!--                }-->
+    <!--            })-->
+    <!--        }-->
+
+    <!--    function sortList() {-->
+    <!--        var selectedValue = $("input[name='sort']:checked").val();-->
+    <!--        var href = '/staff/list?state=' + encodeURIComponent(selectedValue);-->
+    <!--        window.location.href = href;-->
+    <!--    }-->
+
+        function search() {
+        const list = document.getElementById('staffList');
+            console.log(list);
+            var selectedValue = $("input[name='sort']:checked").val();
+            var searchValue = document.getElementById('search_name').value;
+            var href = '/staff/list?state=' + encodeURIComponent(selectedValue) + '&name=' + encodeURIComponent(searchValue);
+
+            window.location.href = href;
+
+        }
+
+        function updatePaginationLinks() {
+            var selectedValue = $("input[name='sort']:checked").val();
+            var searchValue = document.getElementById('search_name').value; // 현재 검색어 값
+            var links = document.querySelectorAll('.pagination .page-item a');
+
+            console.log("Selected Sort State: ", selectedValue);
+            console.log("Search Name: ", searchValue);
+
+            links.forEach(link => {
+                var href = link.getAttribute('href');
+                if (href) {
+                    if (href.indexOf('?') !== -1) {
+                        link.setAttribute('href', href +
+                        '&state=' + encodeURIComponent(selectedValue) +
+                        '&name=' + encodeURIComponent(searchValue));
+                    } else {
+                        link.setAttribute('href', href +
+                        '?state=' + encodeURIComponent(selectedValue) +
+                        '&name=' + encodeURIComponent(searchValue));
+                    }
+                }
+            });
+            // 페이지네이션 상태 (현재 페이지, 전체 페이지 등) 콘솔 출력
+        var currentPage = $(".page-item.active a").text();
+        var totalPages = $(".pagination").find('.page-item').length - 2; // 첫 번째와 마지막 페이지 링크 제외
+        console.log("Current Page: ", currentPage.length);
+        console.log("Total Pages: ", totalPages);
+        }
+
+        // 페이지 이동 시, name 파라미터를 유지하도록 페이지네이션을 업데이트
+        window.addEventListener('load', updatePaginationLinks);
+    </script>
+</div>
 </html>

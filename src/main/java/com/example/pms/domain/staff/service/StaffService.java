@@ -55,6 +55,7 @@ public class StaffService {
                         + staffForm.getMobileNum().substring(7))
                 .email(staffForm.getEmail())
                 .startDate(staffForm.getStartDate())
+                .endDate(staffForm.getEndDate())
                 .build();
         staffRepository.save(staff);
     }

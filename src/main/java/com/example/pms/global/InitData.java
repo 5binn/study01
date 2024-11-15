@@ -83,7 +83,7 @@ public class InitData implements InitializingBean {
                 .name("박길순")
                 .personalNum("890621-1221313")
                 .address("서울어딘가")
-                .dept("관리")
+                .dept("관리부")
                 .role("대리")
                 .bank("농협")
                 .account("20-91238-0123")
